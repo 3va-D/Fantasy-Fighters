@@ -1,0 +1,70 @@
+:root {
+    --first-color: #d2c4f5;
+    --second-color: #949bf6;
+    --third-color: #faf4b7;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--third-color);
+    color: white;
+    overflow: hidden; 
+}
+
+.screen {
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    height: 100vh;
+    box-sizing: border-box;
+}
+
+.nav {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px;
+    background-image: linear-gradient(to right, var(--second-color), var(--first-color));
+    height:7%;
+    flex-shrink: 0;
+}
+
+#game-container {
+    background-color: black;
+    height:100%;
+    flex-grow: 1;
+    width: 100%;
+    position: relative;
+}
+
+h1 {
+    font-family: "Franklin Gothic Medium", Arial, sans-serif;
+    font-size: 30px;
+    font-style: italic;
+    font-weight: 5;
+    line-height: 26.4px;
+    padding: 5px;
+}
+
+.right-nav {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    width: 500px;
+    border-radius: 50px;
+    height: 35px;
+    padding: 5px;
+    background-color: var(--second-color);
+}
+
+.right-nav a {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    text-decoration: none;
+    font-size: 20px;
+    color: white;
+}
