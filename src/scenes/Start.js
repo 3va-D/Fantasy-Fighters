@@ -7,6 +7,11 @@ export class Start extends Phaser.Scene {
         super('Start');
     }
 
+    init(data) {
+        // Track if the enemy was defeated in a previous run
+        this.enemyDefeated = data.enemyDefeated || false;
+    }
+
     preload() {
         this.load.image('background', 'assets/backgrounds/startingBackground.png');
 
@@ -23,12 +28,9 @@ export class Start extends Phaser.Scene {
                 frameHeight: 400
             }
         );
-
-        
     }
 
     create() {
-
         const worldWidth = 2000;
         const worldHeight = 2000;
         this.physics.world.setBounds(0, 0, worldWidth, worldHeight);
@@ -38,27 +40,37 @@ export class Start extends Phaser.Scene {
 
         this.player = new Player(this, worldWidth / 2, worldHeight / 2);
 
-        this.enemy = new Enemy(this, 500, 1050);
+        // Only create the enemy if it hasn't been defeated yet
+        if (!this.enemyDefeated) {
+            this.enemy = new Enemy(this, 500, 1050, 'none');
+        }
 
         this.cameras.main.setBounds(0, 0, worldWidth, worldHeight);
         this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
+
+        // Listen for when this scene resumes from the Battle scene
+        this.events.on('wake', (sys, data) => {
+            if (data && data.enemyDefeated && this.enemy) {
+                this.enemy.destroy();
+                this.enemy = null;
+                this.enemyDefeated = true;
+            }
+        });
     }
 
     update() {
-
         if (this.player) {
             this.player.update();
+            this.player.setDepth(this.player.y);
         }
 
         if (this.enemy) {
             this.enemy.update();
+            this.enemy.setDepth(this.enemy.y);
         }
 
-        this.player.setDepth(this.player.y);
-        this.enemy.setDepth(this.enemy.y);
-
-        if (!this.battleStarted) {
-
+        // Check distance only if the enemy exists
+        if (!this.battleStarted && this.enemy) {
             const distance = Phaser.Math.Distance.Between(
                 this.player.x,
                 this.player.y,
@@ -68,12 +80,9 @@ export class Start extends Phaser.Scene {
 
             if (distance < 200) {
                 this.battleStarted = true;
-                this.scene.start("Battle");
-                this.scene.launch("Battle", {
-                    enemy: this.enemy
-                });
+                // Switch sleeps 'Start' and launches 'Battle' while keeping player position saved
+                this.scene.switch("Battle");
             }
         }
     }
-    
 }
